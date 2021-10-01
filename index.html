@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>光學變焦(Optical Zoom)數位變焦(Digital Zoom)</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport"
+    content="width=device-width,height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <!-- <link rel="apple-touch-icon-precomposed" href="icons/icon72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="icons/icon72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="icons/icon114.png" />
+  <link rel="SHORTCUT ICON" href="icons/icon72.png.jpg"> -->
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script type="text/javascript" src="script/thirdparty/fabric.min.js"></script>
+  <script type="text/javascript" src="script/thirdparty/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+  <div id="mainContain">
+    <div id="header">
+      <div id="titleArea">Hi ZoomBo</div>
+      <div id="toolBarArea">
+        <ul>
+          <li id="btnExport">export</li>
+          <li id="btnExportFabric">export fabric</li>
+        </ul>
+      </div>
+    </div>
+    <div id="mainPage">
+      <div id="lContain">
+        <div id="canvasParent">
+          <canvas id="mainEditor"></canvas>
+        </div>
+      </div>
+      <div id="rContain">
+        <div id="hideDiv"><div id="tempDiv"></div></div>
+        <div id="property">
+          <ul>
+            <li class="prop-title">MiniMap</li>
+            <li class="prop-content-minimap">
+              <div><canvas id="minimapCanvas" width="300" height="300"></canvas></div>
+            </li>
+            <li class="prop-title">View tool</li>
+            <li class="prop-content">
+              <div><button id="selectViewBtn">select View</button></div>
+              <div><button id="panCanvas">pan View</button></div>
+              <div><button id="resizeCanvas">resize View</button></div>
+            </li>
+            <li class="prop-title">Draw tool</li>
+            <li class="prop-content">
+              <div>Rotate:</div>
+              <div>
+                <input type="range" min="0" max="360" value="0" class="slider" id="myRange">
+                <input type="number" id="angle" value="0" />
+              </div>
+              <div>Zoom:</div>
+              <div><span id="zoomNum" style="color:#F00;"></span></div>
+            </li>
+            <li class="prop-title">Output</li>
+            <li class="prop-content-minimap">
+              <div>labelme json</div>
+              <div><textarea id="exportJson"></textarea></div>
+              <div>Fabric json</div>
+              <div><textarea id="currentJson"></textarea></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="clearBoth"></div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="script/fabricExtend/hiDraw.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Event.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_override.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Circle.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Line.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Rectangle.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Polygon.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Polyline.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_export.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Import.js"></script>
+<script type="text/javascript" src="script/drawToolZoom.js"></script>
+<script>
+  (function () {
+    // initCanvas('canvasParent', 'mainEditor')
+  //   loadInfo()
+  // miniMapActive()
+  })()
+  
+  
+</script>
+
+</html>

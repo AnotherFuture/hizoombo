@@ -1,0 +1,147 @@
+{
+    "app-version": "slide-slice-0.1.0",
+    "date": "2021-08-23 01:30:12",
+    "format": "hamamatsu",
+    "level_count": 9,
+    "partition_resolution": [
+        3000,
+        3000
+    ],
+    "partition": [
+        {
+            "level": 0,
+            "resolution": [
+                51200,
+                38144
+            ],
+            "downsample": 1.0,
+            "count": 234,
+            "row": 13,
+            "column": 18,
+            "slice_size": [
+                3000,
+                3000
+            ]
+        },
+        {
+            "level": 1,
+            "resolution": [
+                25600,
+                19072
+            ],
+            "downsample": 2.0,
+            "count": 63,
+            "row": 7,
+            "column": 9,
+            "slice_size": [
+                3000,
+                3000
+            ]
+        },
+        {
+            "level": 2,
+            "resolution": [
+                12800,
+                9536
+            ],
+            "downsample": 4.0,
+            "count": 20,
+            "row": 4,
+            "column": 5,
+            "slice_size": [
+                3000,
+                3000
+            ]
+        },
+        {
+            "level": 3,
+            "resolution": [
+                6400,
+                4768
+            ],
+            "downsample": 8.0,
+            "count": 6,
+            "row": 2,
+            "column": 3,
+            "slice_size": [
+                3000,
+                3000
+            ]
+        },
+        {
+            "level": 4,
+            "resolution": [
+                3200,
+                2384
+            ],
+            "downsample": 16.0,
+            "count": 2,
+            "row": 1,
+            "column": 2,
+            "slice_size": [
+                3000,
+                3000
+            ]
+        },
+        {
+            "level": 5,
+            "resolution": [
+                1600,
+                1192
+            ],
+            "downsample": 32.0,
+            "count": 1,
+            "row": 1,
+            "column": 1,
+            "slice_size": [
+                1600,
+                1192
+            ]
+        },
+        {
+            "level": 6,
+            "resolution": [
+                800,
+                596
+            ],
+            "downsample": 64.0,
+            "count": 1,
+            "row": 1,
+            "column": 1,
+            "slice_size": [
+                800,
+                596
+            ]
+        },
+        {
+            "level": 7,
+            "resolution": [
+                400,
+                298
+            ],
+            "downsample": 128.0,
+            "count": 1,
+            "row": 1,
+            "column": 1,
+            "slice_size": [
+                400,
+                298
+            ]
+        },
+        {
+            "level": 8,
+            "resolution": [
+                200,
+                149
+            ],
+            "downsample": 256.0,
+            "count": 1,
+            "row": 1,
+            "column": 1,
+            "slice_size": [
+                200,
+                149
+            ]
+        }
+    ]
+}

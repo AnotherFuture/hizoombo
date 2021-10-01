@@ -1,0 +1,148 @@
+{
+    "app-version": "slide-slice-0.1.0",
+    "date": "2021-08-03 02:09:58",
+    "format": "hamamatsu",
+    "level count": 9,
+    "partition resolution": [
+        1024,
+        1024
+    ],
+    "partition": [
+		{
+            "level": 0,
+            "resolution": [
+                51200,
+                38144
+            ],
+            "downsample": 1.0,
+            "count": 234,
+			"row": 18,
+			"column": 13,
+			"sliceSize": [
+				3000,
+				3000
+			]
+		},
+		{
+            "level": 1,
+            "resolution": [
+                25600,
+                19072
+            ],
+            "downsample": 2.0,
+            "count": 63,
+			"row": 9,
+			"column": 7,
+			"sliceSize": [
+				3000,
+				3000
+			]
+		},
+		{
+            "level": 2,
+            "resolution": [
+                12800,
+                9536
+            ],
+            "downsample": 4.0,
+            "count": 20,
+			"row": 5,
+			"column": 4,
+			"sliceSize": [
+				3000,
+				3000
+			]
+		},
+		{
+            "level": 3,
+            "resolution": [
+                6400,
+                4768
+            ],
+            "downsample": 8.0,
+            "count": 6,
+			"row": 3,
+			"column": 2,
+			"sliceSize": [
+				6400,
+                4768
+			]
+		},
+		{
+            "level": 4,
+            "resolution": [
+                3200,
+                2384
+            ],
+            "downsample": 16.0,
+            "count": 2,
+			"row": 2,
+			"column": 1,
+			"sliceSize": [
+				3000,
+				3000
+			]
+		},
+		{
+            "level": 5,
+            "resolution": [
+                1600,
+				1192
+            ],
+            "downsample": 32.0,
+            "count": 1,
+			"row": 1,
+			"column": 1,
+			"sliceSize": [
+				1600,
+				1192
+			]
+		},
+		{
+            "level": 6,
+            "resolution": [
+                800,
+				596
+            ],
+            "downsample": 64.0,
+            "count": 1,
+			"row": 1,
+			"column": 1,
+			"sliceSize": [
+				800,
+				596
+			]
+		},
+		{
+            "level": 7,
+            "resolution": [
+                400,
+                298
+            ],
+            "downsample": 128.0,
+            "count": 1,
+			"row": 1,
+			"column": 1,
+			"sliceSize": [
+				400,
+                298
+			]
+		},
+		{
+            "level": 8,
+            "resolution": [
+                200,
+                149
+            ],
+            "downsample": 256.0,
+            "count": 1,
+			"row": 1,
+			"column": 1,
+			"sliceSize": [
+				200,
+				149
+			]
+		}
+	]
+}
+
