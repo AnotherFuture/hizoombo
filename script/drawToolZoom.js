@@ -1,5 +1,6 @@
 (function () {
   window.tt = 0
+  window.imagePath = './spliteImg/1622/CMU-1'
   window.imgInfo
   window.imglevel
   window.baselevel
@@ -105,6 +106,20 @@
     })
     $('#currentJson').val(JSON.stringify(fabricJson, null, 2))
   });
+
+  $('#btnLoadImage').click(function () {
+    edit.canvasView.loadFromJSON({})
+    edit.canvasView.setBackgroundImage('')
+    rotateSwitch(0)
+    newZoomToPoint({
+      x: 0,
+      y: 0
+    }, 1)
+    window.imagePath = $('#imagePath').val()
+    loadInfo()
+  })
+
+  
 
 
   window.addEventListener('resize', function () {
@@ -378,7 +393,6 @@
   function loadImgByLevelAndCanvasArea(levelInfo, coord, zoom, canvasArea) {
     var count = levelInfo.count;
     var level = parseInt(levelInfo.level);
-    // console.log('level**', level)
     var scaleRate = levelInfo.scaleRate;
     // if(level < 3) {return false}
     var row = parseInt(levelInfo.row);
@@ -411,8 +425,6 @@
     canvasTemplate.height = window.tempCanvasWidth
     var rate = Math.ceil(imgAryBaseWidth / window.viewWidth);
     // -------------------
-    // if(level <= 4) {console.log('A')}
-    console.log('*********************************************************//')
     for (var i = 0; i < row; i++) {
       for (var j = 0; j < column; j++) {
         var idx = i * (column) + j;
@@ -453,13 +465,10 @@
           w: window.tempCanvasWidth / zoom * zoom,
           h: window.tempCanvasWidth / zoom * zoom
         }
-        console.log('loadImgByLevelAndCanvasArea', level + '_' + i + '_' + j, boundaryIntersect(areaB, canvasArea))
         if (boundaryIntersect(areaB, canvasArea)) {
-          // console.log('loading-------', level+'_'+i+'_'+j, canvasAreaA, canvasArea, areaB)
           if (imgAry[idx]) {
             // 已下載過
             // drawTempCanvasByLevel(levelInfo, coord, zoom, true)
-            // console.log('downloaded', level+'_'+i+'_'+j)
           } else {
             // 需下載圖片
             var img = new Image();
@@ -467,32 +476,23 @@
             img.onload = function () {
               this.comp = true;
               drawTempCanvasByLevel(levelInfo, coord, zoom, true)
-              // console.log('download compelete', this.n)
             };
             img.n = level + '_' + i + '_' + j
-            // img.src = "/spliteImg/test/CMU-1_"+level+'_'+i+'_'+j+".jpg";
-            // img.src = "/spliteImg/test2/2021-01-26 16.08.13_"+level+'_'+i+'_'+j+".jpg";
-            img.src = "/spliteImg/1622/CMU-1_" + level + '_' + i + '_' + j + ".jpg";
+            img.src = window.imagePath + "_" + level + '_' + i + '_' + j + ".jpg";
             imgAry[i * (column) + j] = img
-            // console.log('downloading...', level+'_'+i+'_'+j)
           }
         } else {
-          // console.log('why?????????', level+'_'+i+'_'+j, canvasAreaA, canvasArea, areaB)
         }
       }
     }
-    console.log('*********************************************************//')
     drawTempCanvasByLevel(levelInfo, coord, zoom, true)
   }
 
 
   function drawTempCanvasByLevel(levelInfo, coord, zoom, changeView) {
-    console.log('---------------------------------------------------------------')
     // var ss = 4 * 6
     var level = parseInt(levelInfo.level);
     var count = parseInt(levelInfo.count);
-    // console.log('ll*', level, zoom)
-    // console.log(level)
     var row = parseInt(levelInfo.row);
     var column = parseInt(levelInfo.column);
     var scaleRate = levelInfo.scaleRate;
@@ -537,7 +537,6 @@
           // y = -1 * coord.y*zoom
           x = (shiftByViewWidth(0, 0, 0, 0, 0, zoom) - 1 * coord.x) * zoom
           y = (shiftByViewWidth(0, 0, 0, 0, 0, zoom) - 1 * coord.y) * zoom
-          // console.log('x:', x, coord.x, ' y:', y, coord.y, 'zoom', zoom)
           ctx.drawImage(imgAry[i], x, y, w, h);
           ctx.font = "10px Arial";
           ctx.fillStyle = '#FFF';
@@ -589,10 +588,7 @@
             w: w,
             h: h
           }
-          console.log('drawTempCanvasByLevel', imgAry[i].n, boundaryIntersect(areaB, area))
           if (boundaryIntersect(areaB, area)) {
-            // console.log('draw', imgAry[i].n, areaA, area, areaB, coord.x, lt.x)
-            // console.log('*****area*****', imgAry[i].n)
             ctx.drawImage(
               imgAry[i],
               x,
@@ -601,7 +597,6 @@
               h
             );
           } else {
-            // console.log('not draw', imgAry[i].n, areaB, area, areaA, coord.x, lt.x)
           }
           ctx.font = "10px Arial";
           ctx.fillStyle = '#FFF';
@@ -611,16 +606,13 @@
             y + 10);
         }
         // if (level === parseInt(window.baselevel.level) || changeView) {
-        //   // console.log('ll', level, zoom)
         //   renderCanvasByLevel(levelInfo, coord, zoom)
         // }
       }
     }
     if (level === parseInt(window.baselevel.level) || changeView) {
-      // console.log('ll', level, zoom)
       renderCanvasByLevel(levelInfo, coord, zoom)
     }
-    console.log('---------------------------------------------------------------')
   }
 
 
@@ -641,14 +633,6 @@
     if (canvasTemplate) {
       dataURL = canvasTemplate.toDataURL('image/jpeg');
       // 將圖繪製到 真實畫布
-      // if (zoom < scaleRate) { return false}
-      // if (level != 4) {return false}
-      console.log()
-      // function(){
-      //   // canvas.backgroundImage.rotate(window.theta);
-      //   canvas.renderAll.bind(canvas)
-      // }
-
       if (window.imageFilter) {
         if (!window.duotoneFilter) {
           window.duotoneFilter = new fabric.Image.filters.Composed({
@@ -709,7 +693,6 @@
 
 
   function boundaryIntersect(areaA, areaB) {
-    // console.log('areaB', areaB)
     // area: {x,y,w,h}
     // 確認 A x 兩端點 交集 B
     var ax1 = areaA.x,
@@ -814,7 +797,6 @@
     // const h = canvasMinimap.height / zoom
     w = window.tempCanvasWidth / rateCanvas / zoom
     h = window.tempCanvasWidth / rateCanvas / zoom
-    // console.log('x:', x, that.leftTopCoord().x, ' y:', y, that.leftTopCoord().y, 'zoom', zoom, 'minimap')
     ctx.rect(x, y, w, h)
     ctx.stroke()
     // ----------------------
@@ -934,8 +916,6 @@
     // canvasMinimap.addEventListener('mousemove', drawing,   false);
     // canvasMinimap.addEventListener('mouseup',   stopDrawing, false);
     function pickPoint(e) {
-      console.log(e)
-      console.log(e.offsetX, e.offsetY)
       // var imgAryBaseWidth = window.baselevel.slice_size[0]
       var imgAryBaseWidth = window.baselevel.resolution[0] // tempXXX
       const rateCanvas = Math.ceil(canvas.width / canvasMinimap.width)
@@ -951,10 +931,8 @@
       var ary = new Array(6)
       var ary = canvas.viewportTransform;
       var centerMoveMatirx = [1, 0, 0, 1, pointer.x - x, pointer.y - y]
-      // console.log('--A--', JSON.stringify(ary))
       // var centerMoveMatirx = [1,0,0,1,10,10]
       ary = matrixProduct(ary, centerMoveMatirx) // 先平移
-      // console.log('--B--', JSON.stringify(ary))
       canvas.setViewportTransform(ary);
       canvas.renderAll();
       clearTimeout(tt)
@@ -1160,7 +1138,7 @@
       }
       loadImgByLevelAndCanvasArea(window.baselevel, coordinate, zoom, area)
     });
-    oReq.open("GET", "./spliteImg/1622/CMU-1_slice_info_simple.json");
+    oReq.open("GET", window.imagePath + "_slice_info_simple.json");
     oReq.send();
   }
 
@@ -1174,8 +1152,6 @@
     var imgAry = new Array(count);
     for (var i = 0; i < row; i++) {
       for (var j = 0; j < column; j++) {
-        // for(var i = 0; i < column; i++){
-        //   for(var j = 0; j < row; j++){
         var img = new Image();
         img.comp = false;
         img.onload = function () {
@@ -1184,19 +1160,8 @@
           // drawTempCanvasByLevel(levelInfo)
         };
         img.n = level + '_' + i + '_' + j
-        // img.src = "/spliteImg/test/CMU-1_"+level+'_'+i+'_'+j+".jpg";
-        // img.src = "/spliteImg/test/CMU-1_"+level+'_'+i+'_'+j+".jpg";
-        // img.src = "/spliteImg/test2/2021-01-26 16.08.13_"+level+'_'+i+'_'+j+".jpg";
-        img.src = "/spliteImg/1622/CMU-1_" + level + '_' + i + '_' + j + ".jpg";
-        // highResolution
-        // imgAry.push(img)
-        // imgAry[i * (row) + j] = img
+        img.src = window.imagePath + "_" + level + '_' + i + '_' + j + ".jpg";
         imgAry[i * (column) + j] = img
-        if (level == 8) {
-          // console.log(level+'_'+i+'_'+j, '****', i * column + j, '**row', row,'**column', column)
-          // document.getElementById('imgSplite').appendChild(img)
-        }
-
       }
     }
     window.imglevel[parseInt(levelInfo.level)] = {}
