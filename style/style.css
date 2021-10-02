@@ -53,12 +53,24 @@ body {
   padding-right: 5px;
   box-sizing: border-box;
   border-right: 1px solid #FFFFFF;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
 }
 #toolBarArea > ul > li:hover {
-  background-color: rgb(112,128,144);
+  background-color: rgb(70,130,180);
+  opacity: 1;
 }
 #toolBarArea > ul > li:active {
   border-bottom: 1px solid #FFFFFF;
+}
+
+.tool-icon {
+  vertical-align: middle;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
 }
 
 #mainPage {
@@ -145,6 +157,59 @@ body {
   overflow: auto;
 }
 
+.prop-iconBtn {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(70,130,180);
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px;
+  cursor: pointer;
+  background-size: contain;
+  opacity: 0.7;
+}
+
+.prop-iconBtn:hover {
+  opacity: 1;
+}
+
+.prop-slider {
+  margin: 0px;
+  -webkit-appearance: none;
+  width: 90%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.prop-slider:hover {
+  opacity: 1;
+}
+
+.prop-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: rgb(70,130,180);
+  cursor: pointer;
+}
+
+.prop-slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: rgb(70,130,180);
+  cursor: pointer;
+}
+
 #canvasParent {
   position: relative;
   margin: 0 auto;
@@ -154,9 +219,32 @@ body {
   background-color: rgb(39,39,39);
 }
 
+.prop-input{
+  -webkit-appearance: none;
+  width: 90%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  border: none;
+    box-sizing: border-box;
+}
+
+.prop-input:hover {
+  opacity: 1;
+}
+
 #exportJson, #currentJson {
   width: 300px;
-  height: 300px;
+  height: 150px;
+  -webkit-appearance: none;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
 }
 
 #imagePath {
@@ -166,4 +254,16 @@ body {
   box-sizing: border-box;
   padding: 1px;
   margin: 0;
+}
+/* --- icon --- */
+#selectViewBtn {
+  background-image: url('../icon/selectArea_w.png');
+}
+
+#panCanvas {
+  background-image: url('../icon/move_w.png');
+}
+
+#resizeCanvas {
+  background-image: url('../icon/resize_w.png');
 }

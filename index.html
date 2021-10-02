@@ -9,10 +9,10 @@
     content="width=device-width,height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <!-- <link rel="apple-touch-icon-precomposed" href="icons/icon72.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="icons/icon72.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="icons/icon114.png" />
-  <link rel="SHORTCUT ICON" href="icons/icon72.png.jpg"> -->
+  <link rel="apple-touch-icon-precomposed" href="icon/Key_logo.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon/Key_logo.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="icon/Key_logo.png" />
+  <link rel="SHORTCUT ICON" href="icon/Key_logo.png">
   <link rel="stylesheet" type="text/css" href="style/style.css" />
   <script type="text/javascript" src="script/thirdparty/fabric.min.js"></script>
   <script type="text/javascript" src="script/thirdparty/jquery-3.5.1.min.js"></script>
@@ -24,10 +24,12 @@
       <div id="titleArea">Hi ZoomBo</div>
       <div id="toolBarArea">
         <ul>
-          <li id="btnExport">export</li>
-          <li id="btnExportFabric">export fabric</li>
-          <li id="btnLoadImage">load Image</li>
+          <li id="btnExport"><img src="./icon/export-file_w.png" class="tool-icon">export</li>
+          <li id="btnExportFabric"><img src="./icon/export-file-f_w.png" class="tool-icon">export fabric</li>
+          <li id="btnLoadImage"><img src="./icon/import-file_w.png" class="tool-icon">load Image</li>
           <li><input type="text" id="imagePath" value="./spliteImg/1622/CMU-1" /></li>
+          <li id="btnRect"><img src="./icon/rectangle_w.png" class="tool-icon"></li>
+          <li id="btnEllipse"><img src="./icon/ellipse_w.png" class="tool-icon"></li>
         </ul>
       </div>
     </div>
@@ -47,19 +49,19 @@
             </li>
             <li class="prop-title">View tool</li>
             <li class="prop-content">
-              <div><button id="selectViewBtn">select View</button></div>
-              <div><button id="panCanvas">pan View</button></div>
-              <div><button id="resizeCanvas">resize View</button></div>
+              <button id="selectViewBtn" class="prop-iconBtn"></button>
+              <button id="panCanvas" class="prop-iconBtn"></button>
+              <button id="resizeCanvas" class="prop-iconBtn"></button>
             </li>
             <li class="prop-title">Draw tool</li>
             <li class="prop-content">
               <div>Rotate:</div>
               <div>
-                <input type="range" min="0" max="360" value="0" class="slider" id="myRange">
-                <input type="number" id="angle" value="0" />
+                <input type="range" min="0" max="360" value="0" class="prop-slider" id="myRange">
+                <input type="number" id="angle" value="0" class="prop-input" />
               </div>
               <div>Zoom:</div>
-              <div><span id="zoomNum" style="color:#F00;"></span></div>
+              <div><span id="zoomNum" style="color:rgb(70,130,180);"></span></div>
             </li>
             <li class="prop-title">Output</li>
             <li class="prop-content-minimap">
@@ -76,16 +78,18 @@
   </div>
 </body>
 <script type="text/javascript" src="script/fabricExtend/hiDraw.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiMathUtil.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Event.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_override.js"></script>
-<script type="text/javascript" src="script/fabricExtend/hiDraw_Circle.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hi3d_Sphere.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Line.js"></script>
-<script type="text/javascript" src="script/fabricExtend/hiDraw_Rectangle.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hi3d_Cube.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Polygon.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Polyline.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_export.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Import.js"></script>
 <script type="text/javascript" src="script/drawToolZoom.js"></script>
+<script type="text/javascript" src="script/drawToolEvent.js"></script>
 <script>
   (function () {
     // initCanvas('canvasParent', 'mainEditor')
