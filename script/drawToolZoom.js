@@ -26,7 +26,14 @@
   var selectViewBtn = document.getElementById("selectViewBtn");
   // var output = document.getElementById("rotateNum");
   slider.oninput = function () {
-    rotateSwitch(this.value)
+    var objShow = false
+    if (parseInt(this.value) === 0 || parseInt(this.value) === 360) {
+      objShow = true
+    }
+    edit.canvasView.forEachObject(function(i){
+      i.visible = objShow
+    })
+    rotateSwitch(parseInt(this.value))
     document.getElementById('angle').value = this.value
     document.getElementById('zoomNum').innerHTML = realZoom()
   }
