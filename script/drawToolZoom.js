@@ -203,7 +203,7 @@
               rotateSwitch(tempAngle)
             }
             loadImgByLevelAndCanvasArea(levelInfo, coordinate, zoom, area)
-          }, 100)
+          }, 1000)
         },
         mouse_down: function (opt) {
           var evt = opt.e;
@@ -251,7 +251,7 @@
                 rotateSwitch(tempAngle)
               }
               loadImgByLevelAndCanvasArea(levelInfo, coordinate, zoom, area)
-            }, 100)
+            }, 1000)
             edit.canvasView.renderAll();
           }
         },
