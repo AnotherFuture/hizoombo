@@ -548,6 +548,12 @@
           ctx.font = "10px Arial";
           ctx.fillStyle = '#FFF';
           ctx.fillText(imgAry[i].n, 0, 10);
+          ctx.strokeStyle = '#F00';
+          ctx.beginPath()
+          ctx.moveTo(x + 20, y);
+          ctx.lineTo(x, y);
+          ctx.lineTo(x, y + 20);
+          ctx.stroke()
         } else {
           var rate = Math.ceil(imgAryBaseWidth / window.viewWidth);
           w = window.sliceSize / scaleRate / rate * zoom; // why 2 ?
@@ -611,6 +617,12 @@
           ctx.fillText(imgAry[i].n,
             x,
             y + 10);
+          ctx.strokeStyle = '#F00';
+          ctx.beginPath()
+          ctx.moveTo(x + 20, y);
+          ctx.lineTo(x, y);
+          ctx.lineTo(x, y + 20);
+          ctx.stroke()
         }
         // if (level === parseInt(window.baselevel.level) || changeView) {
         //   renderCanvasByLevel(levelInfo, coord, zoom)
