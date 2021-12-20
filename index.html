@@ -26,6 +26,8 @@
         <ul>
           <li id="btnExport"><img src="./icon/export-file_w.png" class="tool-icon">export</li>
           <li id="btnExportFabric"><img src="./icon/export-file-f_w.png" class="tool-icon">export fabric</li>
+          <li id="btnImport"><img src="./icon/import-file_w.png" class="tool-icon">import</li>
+          <li id="btnImportFabric"><img src="./icon/import-file_w.png" class="tool-icon">import fabric</li>
           <li id="btnLoadImage"><img src="./icon/import-file_w.png" class="tool-icon">load Image</li>
           <li><input type="text" id="imagePath" value="./spliteImg/1622/CMU-1" /></li>
           <li id="btnRect"><img src="./icon/rectangle_w.png" class="tool-icon"></li>
@@ -40,7 +42,9 @@
         </div>
       </div>
       <div id="rContain">
-        <div id="hideDiv"><div id="tempDiv"></div></div>
+        <div id="hideDiv">
+          <!-- <div id="tempDiv"></div> -->
+        </div>
         <div id="property">
           <ul>
             <li class="prop-title">MiniMap</li>
@@ -76,14 +80,17 @@
       <div class="clearBoth"></div>
     </div>
   </div>
+  <div id="tempDiv"></div>
 </body>
 <script type="text/javascript" src="script/fabricExtend/hiDraw.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiMathUtil.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Event.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_override.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hi3d_Sphere.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Circle.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Line.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hi3d_Cube.js"></script>
+<script type="text/javascript" src="script/fabricExtend/hiDraw_Rectangle.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Polygon.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_Polyline.js"></script>
 <script type="text/javascript" src="script/fabricExtend/hiDraw_export.js"></script>

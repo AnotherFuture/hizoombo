@@ -17,7 +17,7 @@
     edit.removeCanvasEvents();
     edit.changeSelectableStatus(false);
     edit.changeCanvasProperty(false, false);
-    var squrect = new edit.HiCube(edit, objOption);
+    var squrect = new edit.Rectangle(edit, objOption);
   });
 
   $("#btnEllipse").click(function () {
@@ -25,6 +25,6 @@
     edit.removeCanvasEvents();
     edit.changeSelectableStatus(false);
     edit.changeCanvasProperty(false, false);
-    var circle = new edit.HiSphere(edit, objOption);
+    var circle = new edit.Circle(edit, objOption);
   });
 })()

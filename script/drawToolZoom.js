@@ -1,6 +1,7 @@
 (function () {
   window.tt = 0
-  window.imagePath = './spliteImg/1622/CMU-1'
+  // window.imagePath = './spliteImg/1622/CMU-1'
+  window.imagePath = './spliteImg/1112222/1112222'
   window.imgInfo
   window.imglevel
   window.baselevel
@@ -126,7 +127,52 @@
     loadInfo()
   })
 
-  
+  $('#btnImportFabric').click(function () {
+    fetch('http://127.0.0.1:2333/1112222_reduced.json')
+      .then(function(response) {
+        console.log(response)
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(myJson);
+        // var labelmeJson = JSON.parse($('#exportJson').val())
+        var labelmeJson = JSON.parse(myJson)
+        var fabricJson = edit.Export(labelmeJson)
+        var fabricJsonOrg = edit.toFabricJson()
+        fabricJsonOrg["objects"] = fabricJsonOrg["objects"].filter(function (obj) {
+          if (!obj['tempDrawShape']) {
+            return true;
+          } else {
+            return false;
+          }
+        })
+        fabricJson.backgroundImage = fabricJsonOrg.backgroundImage
+        edit.canvasView.loadFromJSON(fabricJson, edit.canvasView.renderAll.bind(edit.canvasView), function(){
+          console.log('***')
+        })
+      });
+    
+  })
+
+  $('#btnImportFabric').click(function () {
+    // var fabricJson = edit.canvasView.toJSON(['label', 'uniqueIndex', 'hiId', 'altitude', 'source']);
+    var fabricJsonOrg = edit.toFabricJson()
+    fabricJsonOrg["objects"] = fabricJsonOrg["objects"].filter(function (obj) {
+      if (!obj['tempDrawShape']) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    var fabricJson = JSON.parse($('#currentJson').val())
+    fabricJson.backgroundImage = fabricJsonOrg.backgroundImage
+    edit.canvasView.loadFromJSON(fabricJson, edit.canvasView.renderAll.bind(edit.canvasView), function(){
+      console.log('????????')
+    })
+    // $('#currentJson').val(JSON.stringify(fabricJson))
+    // var json = edit.export(fabricJson);
+    // $('#exportJson').val(JSON.stringify(json, null, 2))
+  });
 
 
   window.addEventListener('resize', function () {
@@ -1133,6 +1179,7 @@
       })
       // 圖移置中
       // const imgAryBaseWidth = window.baselevel.slice_size[0]
+      window.sliceSize = window.baselevel.slice_size[0]
       const imgAryBaseWidth = window.baselevel.resolution[0] // tempXXXX
       const rate = Math.ceil(imgAryBaseWidth / canvas.width)
       const x = (imgAryBaseWidth / rate - canvas.width) / 2

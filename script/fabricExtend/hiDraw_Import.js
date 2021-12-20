@@ -53,6 +53,7 @@ hiDraw.prototype.import = (function () {
 			var item = hiObj["labelmeObj"]["shapes"][i];
 			var label = item['label'];
 			var className = item['className'];
+			var objectName = item['objectName'];
 			var strokeColor = item['stroke'] ? item['stroke'] : "rgba(3,212,193,1)";
 			var note = item['note']
 			// console.log('----', item["shape_type"])
@@ -82,7 +83,7 @@ hiDraw.prototype.import = (function () {
 							"width": width,
 							"height": height,
 							"fill": colorToRgbA(strokeColor, fillAlpha),
-							"stroke": strokeColor,
+							"stroke": colorToRgbA(strokeColor, 0.6),
 							"strokeDashArray": null,
 							"strokeLineCap": "butt",
 							"strokeDashOffset": 0,
@@ -107,6 +108,7 @@ hiDraw.prototype.import = (function () {
 							"endAngle": 6.283185307179586,
 							"label": label,
 							"className": className,
+							"objectName": objectName,
 							"note": note
 						}
 					)
@@ -136,7 +138,7 @@ hiDraw.prototype.import = (function () {
 						"width": width,
 						"height": height,
 						"fill": colorToRgbA(strokeColor, fillAlpha),
-						"stroke": strokeColor,
+						"stroke": colorToRgbA(strokeColor, 0.6),
 						"strokeDashArray": null,
 						"strokeLineCap": "butt",
 						"strokeDashOffset": 0,
@@ -160,6 +162,7 @@ hiDraw.prototype.import = (function () {
 						"ry": 0,
 						"label": label,
 						"className": className,
+						"objectName": objectName,
 						"note": note
 					})
 				}
@@ -202,7 +205,7 @@ hiDraw.prototype.import = (function () {
 					"width": width,
 					"height": height,
 					"fill": colorToRgbA(strokeColor, fillAlpha),
-					"stroke": strokeColor,
+					"stroke": colorToRgbA(strokeColor, 0.6),
 					"strokeDashArray": null,
 					"strokeLineCap": "butt",
 					"strokeDashOffset": 0,
@@ -225,6 +228,7 @@ hiDraw.prototype.import = (function () {
 					"points": points,
 					"label": label,
 					"className": className,
+					"objectName": objectName,
 					"note": note
 				})
 			} else if (item["shape_type"] == "linestrip") {
@@ -262,7 +266,7 @@ hiDraw.prototype.import = (function () {
 					"width": width,
 					"height": height,
 					"fill": colorToRgbA(strokeColor, fillAlpha),
-					"stroke": strokeColor,
+					"stroke": colorToRgbA(strokeColor, 0.6),
 					"strokeDashArray": null,
 					"strokeLineCap": "butt",
 					"strokeDashOffset": 0,
@@ -285,6 +289,7 @@ hiDraw.prototype.import = (function () {
 					"points": points,
 					"label": label,
 					"className": className,
+					"objectName": objectName,
 					"note": note
 				})
 			} else if (item["shape_type"] == "line") {
@@ -339,6 +344,7 @@ hiDraw.prototype.import = (function () {
 					"y2": newY2,
 					"label": label,
 					"className": className,
+					"objectName": objectName,
 					"note": note
 				})
 			} else {
