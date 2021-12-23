@@ -27,4 +27,13 @@
     edit.changeCanvasProperty(false, false);
     var circle = new edit.Circle(edit, objOption);
   });
+
+  
+  $("#btnPolygon").click(function () {
+    edit.fabricObjDefaultOverride({stroke: 'rgb(70,130,180)', fill: 'transparent'})
+    edit.removeCanvasEvents();
+    edit.changeSelectableStatus(false);
+    edit.changeCanvasProperty(false, false);
+    var circle = new edit.Polygon(edit, objOption);
+  });
 })()

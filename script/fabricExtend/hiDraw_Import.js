@@ -357,39 +357,39 @@ hiDraw.prototype.import = (function () {
 			}
 		}
 
-		this.canvasView.loadFromJSON(hiObj["fabricObj"], this.canvasView.renderAll.bind(this.canvasView), function (o, object) {
-			// `o` = json object
-			// `object` = fabric.Object instance
-			if (object.type == 'polygon') {
-				// object.on('selected', function (opt) {
-				// 	var polygon = this;
-				// 	var evt = opt.e;
-				// 	if (evt && evt.shiftKey === true) {
-				// 		polygon.editShape = true;
-				// 		polygon.hasControls = false;
-				// 		polygon.hasBorders = false;
-				// 		polygon.selectable = false;
-				// 		controlOverride.polygonAddPoints(polygon)
-				// 	}
-				// })
-				object.perPixelTargetFind = true;
-			} else if (object.type == 'circle') {
-				object.perPixelTargetFind = true;
-			} else if (object.type == 'polyline') {
-				// object.on('selected', function (opt) {
-				// 	var polyline = this;
-				// 	var evt = opt.e;
-				// 	if (evt && evt.shiftKey === true) {
-				// 		polyline.editShape = true;
-				// 		polyline.hasControls = false;
-				// 		polyline.hasBorders = false;
-				// 		polyline.selectable = false;
-				// 		controlOverride.polylineAddPoints(polyline)
-				// 	}
-				// })
-			}
-			that.canvasView.discardActiveObject()
-		})
+		// this.canvasView.loadFromJSON(hiObj["fabricObj"], this.canvasView.renderAll.bind(this.canvasView), function (o, object) {
+		// 	// `o` = json object
+		// 	// `object` = fabric.Object instance
+		// 	if (object.type == 'polygon') {
+		// 		// object.on('selected', function (opt) {
+		// 		// 	var polygon = this;
+		// 		// 	var evt = opt.e;
+		// 		// 	if (evt && evt.shiftKey === true) {
+		// 		// 		polygon.editShape = true;
+		// 		// 		polygon.hasControls = false;
+		// 		// 		polygon.hasBorders = false;
+		// 		// 		polygon.selectable = false;
+		// 		// 		controlOverride.polygonAddPoints(polygon)
+		// 		// 	}
+		// 		// })
+		// 		object.perPixelTargetFind = true;
+		// 	} else if (object.type == 'circle') {
+		// 		object.perPixelTargetFind = true;
+		// 	} else if (object.type == 'polyline') {
+		// 		// object.on('selected', function (opt) {
+		// 		// 	var polyline = this;
+		// 		// 	var evt = opt.e;
+		// 		// 	if (evt && evt.shiftKey === true) {
+		// 		// 		polyline.editShape = true;
+		// 		// 		polyline.hasControls = false;
+		// 		// 		polyline.hasBorders = false;
+		// 		// 		polyline.selectable = false;
+		// 		// 		controlOverride.polylineAddPoints(polyline)
+		// 		// 	}
+		// 		// })
+		// 	}
+		// 	that.canvasView.discardActiveObject()
+		// })
 
 		return hiObj["fabricObj"];
 	};

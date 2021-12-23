@@ -5,6 +5,8 @@
   window.imgInfo
   window.imglevel
   window.baselevel
+  window.widthPointImportScale = 1
+  window.heightPointImportScale = 1
   window.sliceSize = 3000
 
   window.beforeRotate = [];
@@ -127,8 +129,9 @@
     loadInfo()
   })
 
-  $('#btnImportFabric').click(function () {
-    fetch('http://127.0.0.1:2333/1112222_reduced.json')
+  $('#btnImport').click(function () {
+    // fetch('http://127.0.0.1:2002/spliteImg/1112222/1112222.json')
+    fetch('http://127.0.0.1:2002/spliteImg/1112222/1112222_reduced.json')
       .then(function(response) {
         console.log(response)
         return response.json();
@@ -136,8 +139,42 @@
       .then(function(myJson) {
         console.log(myJson);
         // var labelmeJson = JSON.parse($('#exportJson').val())
-        var labelmeJson = JSON.parse(myJson)
-        var fabricJson = edit.Export(labelmeJson)
+        var labelmeJson = myJson
+        if (typeof myJson === 'string') {
+          labelmeJson = JSON.parse(myJson)
+        } 
+        // reset json point scale -----------------
+        if (labelmeJson.imageWidth && labelmeJson.imageHeight) {
+          const imgAryBaseWidth = window.baselevel.resolution[0] // tempXXXX
+          const rate = Math.ceil(imgAryBaseWidth / canvas.width)
+          window.widthPointImportScale = window.baselevel.resolution[0] / Number(labelmeJson.imageWidth) / rate
+          window.heightPointImportScale = window.baselevel.resolution[1] / Number(labelmeJson.imageHeight) / rate
+          for(let i = 0; i < labelmeJson.shapes.length; i++) {
+            if (labelmeJson.shapes[i].shape_type === 'circle') {
+              for(let j = 0; j < labelmeJson.shapes[i].points.length; j++) {
+                labelmeJson.shapes[i].points[j][0] *= window.widthPointImportScale
+                labelmeJson.shapes[i].points[j][1] *= window.heightPointImportScale
+              }
+            }
+            if (labelmeJson.shapes[i].shape_type === 'polygon') {
+              for(let j = 0; j < labelmeJson.shapes[i].points.length; j++) {
+                labelmeJson.shapes[i].points[j][0] *= window.widthPointImportScale
+                labelmeJson.shapes[i].points[j][1] *= window.heightPointImportScale
+              }
+            }
+            if (labelmeJson.shapes[i].shape_type === 'rectangle') {
+              for(let j = 0; j < labelmeJson.shapes[i].points.length; j++) {
+                labelmeJson.shapes[i].points[j][0] *= window.widthPointImportScale
+                labelmeJson.shapes[i].points[j][1] *= window.heightPointImportScale
+              }
+            }
+          }
+          labelmeJson.imageWidth = window.baselevel.resolution[0]
+          labelmeJson.imageHeight = window.baselevel.resolution[1]
+        }
+        // -----------------
+        var fabricJson = edit.import(labelmeJson)
+        console.log('---fabricJson---', fabricJson)
         var fabricJsonOrg = edit.toFabricJson()
         fabricJsonOrg["objects"] = fabricJsonOrg["objects"].filter(function (obj) {
           if (!obj['tempDrawShape']) {
@@ -147,7 +184,13 @@
           }
         })
         fabricJson.backgroundImage = fabricJsonOrg.backgroundImage
-        edit.canvasView.loadFromJSON(fabricJson, edit.canvasView.renderAll.bind(edit.canvasView), function(){
+        edit.canvasView.loadFromJSON(fabricJson, function(){
+          edit.canvasView.renderAll.bind(edit.canvasView)
+          clearTimeout(window.clearMiniMapTimeout)
+          window.clearMiniMapTimeout = setTimeout(function(){
+            drawMiniMap();
+          },10)
+        }, function(){
           console.log('***')
         })
       });
@@ -424,11 +467,10 @@
     canvas.setViewportTransform(ary);
     canvas.renderAll();
     // },2000)
-    clearTimeout(window.dmini)
-    // window.dmini = setTimeout(function(){
-    drawMiniMap()
-    // },100)
-    // }
+    clearTimeout(window.clearMiniMapTimeout)
+    window.clearMiniMapTimeout = setTimeout(function(){
+      drawMiniMap();
+    },10)
   }
 
   function rotateSwitch(rotateValue) {
@@ -752,7 +794,10 @@
         });
         canvas.renderAll();
       }
-      drawMiniMap();
+      clearTimeout(window.clearMiniMapTimeout)
+      window.clearMiniMapTimeout = setTimeout(function(){
+        drawMiniMap();
+      },10)
     }
   }
 
@@ -890,6 +935,7 @@
     ctx.lineTo(baseX + lb.x / rateCanvas, lb.y / rateCanvas);
     ctx.closePath();
     ctx.stroke()
+    drawMinimapLabel(ctx)
     // ----------------------------------
     // var levelInfo = window.imgInfo.partition.find(function (item) {
     //   return item.scaleRate < zoom || item.scaleRate === 1
@@ -956,6 +1002,69 @@
     //     }
     //   }
     // }
+  }
+
+  function drawMinimapLabel (ctx) {
+    const that = this
+    const canvasMinimap = document.getElementById('minimapCanvas')
+    const canvas = edit.canvasView
+    const scaleRate = 1
+    const imgAryBaseWidth = window.baselevel.resolution[0]
+    const rate = Math.ceil((imgAryBaseWidth / scaleRate) / canvas.width)
+    const rateCanvas = Math.ceil(canvas.width / canvasMinimap.width)
+    ctx.strokeStyle = 'rgba(70,130,180,0.9)'
+    ctx.fillStyle = 'rgba(70,130,180,0.2)'
+    ctx.lineWidth = 1
+    // 縮圖置中，添加平移量
+    const baseX = (canvasMinimap.width - imgAryBaseWidth / rate / rateCanvas) / 2
+
+    const annotationLabelme = edit.export(edit.toFabricJson())
+    console.log('annotationLabelme', annotationLabelme)
+    var rateR = rateCanvas
+    for (var i = 0; i < annotationLabelme.shapes.length; i++) {
+      const item = annotationLabelme.shapes[i]
+      var x, y, j, x1, y1, x2, y2, r
+      if (item.shape_type === 'polygon') {
+        ctx.strokeStyle = item.stroke
+        ctx.fillStyle = edit.colorToRgbA(item.stroke, 0.2)
+        ctx.beginPath()
+        for (j = 0; j < item.points.length; j++) {
+          x = baseX + item.points[j][0] / scaleRate / rateR
+          y = item.points[j][1] / scaleRate / rateR
+          if (j === 0) {
+            ctx.moveTo(x, y)
+          } else {
+            ctx.lineTo(x, y)
+          }
+        }
+        ctx.closePath()
+        ctx.fill()
+        ctx.stroke()
+      } else if (item.shape_type === 'circle') {
+        ctx.strokeStyle = item.stroke
+        ctx.fillStyle = edit.colorToRgbA(item.stroke, 0.2)
+        ctx.beginPath()
+        x1 = baseX + item.points[0][0] / scaleRate / rateR
+        y1 = item.points[0][1] / scaleRate / rateR
+        x2 = baseX + item.points[1][0] / scaleRate / rateR
+        y2 = item.points[1][1] / scaleRate / rateR
+        r = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+        ctx.arc(x1, y1, r, 0, 2 * Math.PI)
+        ctx.fill()
+        ctx.stroke()
+      } else if (item.shape_type === 'rectangle') {
+        ctx.strokeStyle = item.stroke
+        ctx.fillStyle = edit.colorToRgbA(item.stroke, 0.2)
+        x1 = baseX + item.points[0][0] / scaleRate / rateR
+        y1 = item.points[0][1] / scaleRate / rateR
+        x2 = baseX + item.points[1][0] / scaleRate / rateR
+        y2 = item.points[1][1] / scaleRate / rateR
+        ctx.beginPath()
+        ctx.rect(x1, y1, Math.abs(x1 - x2), Math.abs(y1 - y2))
+        ctx.fill()
+        ctx.stroke()
+      }
+    }
   }
 
 

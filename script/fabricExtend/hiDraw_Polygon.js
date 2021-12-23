@@ -1,14 +1,3 @@
-(function(global) {
-
-  // 'use strict';
-
-  var fabric = global.fabric || (global.fabric = { });
-
-  if (fabric.HiPolygon) {
-    fabric.warn('fabric.HiPolygon is already defined');
-    return;
-  }
-
 fabric.HiPolygon = fabric.util.createClass(fabric.Polygon, {
 
   type: 'hiPolygon',
@@ -18,8 +7,15 @@ fabric.HiPolygon = fabric.util.createClass(fabric.Polygon, {
     this.callSuper('initialize', element, options);
   },
 
-  toObject: function (propertiesToInclude) {
-    return this.callSuper('toObject', ['radius', 'startAngle', 'endAngle'].concat(propertiesToInclude));
+  toObject: function () {
+    return fabric.util.object.extend(this.callSuper('toObject'), {
+      label: this.label,
+      uniqueIndex: this.uniqueIndex,
+      className: this.className,
+      note: this.note,
+      id: this.id,
+      objectName: this.objectName
+    });
   },
 
   _render: function (ctx) {
@@ -31,11 +27,12 @@ fabric.HiPolygon = fabric.util.createClass(fabric.Polygon, {
     var polygon = this;
     this.on('selected', function (opt) {
       var evt = opt.e;
-      if (evt && evt.shiftKey === true) {
+      if (evt && evt.shiftKey === true && !polygon.shiftDown) {
         polygon.editShape = true;
         polygon.hasControls = false;
         polygon.hasBorders = false;
         polygon.selectable = false;
+        polygon.shiftDown = true;
         polygon.polygonAddPoints(polygon)
       }
     })
@@ -198,24 +195,75 @@ fabric.HiPolygon.prototype.polygonAddPoints = function (polygon) {
         var size = polygon._getTransformedDimensions(0, 0);
         var idx = parseInt(circle.name.replace('P', ''))
         polygon.points[idx] = {
-          x: mouseLocalPosition.x * polygonBaseSize.x / size.x + polygon.pathOffset.x,
-          y: mouseLocalPosition.y * polygonBaseSize.y / size.y + polygon.pathOffset.y
+          x: parseInt(mouseLocalPosition.x * polygonBaseSize.x / size.x + polygon.pathOffset.x),
+          y: parseInt(mouseLocalPosition.y * polygonBaseSize.y / size.y + polygon.pathOffset.y)
         }
       })
       circle.on('moved', function (opt) {
         drawEdge(canvas, polygon)
         drawPoints(canvas, polygon)
-        // var min = minXY(canvas, polygon);
-        // newDim = polygon._setPositionDimensions({
-        //     left: min.x,
-        //     top: min.y,
-        //     width: min.width,
-        //     height: min.height
+        // var oldC = polygon.getCenterPoint();
+        // polygon._calcDimensions();
+        // var min = hiDraw.prototype.PolygonMinXY('', polygon)
+        // var xx = min.x;
+        // var yy = min.y;
+        // polygon.set({
+        //   left: xx,
+        //   top: yy,
+        //   width: min.width,
+        //   height: min.height
+        // });
+
+        // var pCenter = polygon.getCenterPoint();
+        // var adjPoints = polygon.get("points").map(function (p) {
+        //   return {
+        //     x: p.x - pCenter.x + oldC.x,
+        //     y: p.y - pCenter.y + oldC.y
+        //   };
+        // });
+        // polygon.set({
+        //   points: adjPoints,
+        //   selectable: true
+        // });
+        // polygon.setCoords();
+        // var nPolygon = new fabric.HiPolygon(polygon.get('points'), {
+        //   stroke: '#330000',
+        //   opacity: 1,
+        //   hasBorders: true,
+        //   hasControls: true,
+        //   strokeUniform: true,
+        //   objectCaching: false,
+        //   perPixelTargetFind: true
+        // });
+        // nPolygon.editShape = true;
+        // nPolygon.hasControls = false;
+        // nPolygon.hasBorders = false;
+        // nPolygon.selectable = false;
+        // nPolygon.canvas = canvas
+        // canvas.forEachObject(function (obj) {
+        //   if (obj.tempPoints && Array.isArray(obj.tempPoints)) {
+        //     obj.tempPoints.forEach(function (circle, index) {
+        //       canvas.remove(circle);
+        //     })
+        //   }
+        //   if (obj.tempLines && Array.isArray(obj.tempLines)) {
+        //       obj.tempLines.forEach(function (line, index) {
+        //         canvas.remove(line);
+        //       })
+        //   }
         // })
-        // polygon.set('left', min.x)
-        // polygon.set('top', min.y)
-        // polygon.set('width', min.width)
-        // polygon.set('height', min.height)
+        // var a = polygon.id
+        // polygon.id = null
+        // nPolygon.id = a
+        // nPolygon.stroke = polygon.stroke
+        // nPolygon.fill = polygon.fill
+        // nPolygon.className = polygon.className
+        // nPolygon.label = polygon.label
+        var nPolygon = createNewPolygonFromOld(canvas, polygon)
+        polygon.tempDrawShape = true
+        canvas.remove(polygon)
+        canvas.add(nPolygon)
+        nPolygon.polygonAddPoints(nPolygon)
       })
       tempPoints.push(circle)
     });
@@ -228,6 +276,11 @@ fabric.HiPolygon.prototype.polygonAddPoints = function (polygon) {
     canvas.renderAll()
     drawEdge(canvas, polygon)
     drawPoints(canvas, polygon)
+    var nPolygon = createNewPolygonFromOld(canvas, polygon)
+    polygon.tempDrawShape = true
+    canvas.remove(polygon)
+    canvas.add(nPolygon)
+    nPolygon.polygonAddPoints(nPolygon)
   }
 
   function drawEdge(canvas, polygon) {
@@ -306,6 +359,45 @@ fabric.HiPolygon.prototype.polygonAddPoints = function (polygon) {
       tempLines.push(line)
     });
     polygon.tempLines = tempLines;
+  }
+  function createNewPolygonFromOld (canvas, polygon) {
+    var min = hiDraw.prototype.PolygonMinXY(canvas, polygon)
+    var nPolygon = new fabric.HiPolygon(polygon.get('points'), {
+      left: min.x,
+      top: min.y,
+      stroke: '#330000',
+      opacity: 1,
+      hasBorders: false,
+      hasControls: true,
+      strokeUniform: true,
+      objectCaching: false,
+      perPixelTargetFind: true
+    });
+    nPolygon.editShape = true;
+    nPolygon.hasControls = false;
+    nPolygon.hasBorders = false;
+    nPolygon.selectable = false;
+    nPolygon.canvas = canvas
+    canvas.forEachObject(function (obj) {
+      if (obj.tempPoints && Array.isArray(obj.tempPoints)) {
+        obj.tempPoints.forEach(function (circle, index) {
+          canvas.remove(circle);
+        })
+      }
+      if (obj.tempLines && Array.isArray(obj.tempLines)) {
+          obj.tempLines.forEach(function (line, index) {
+            canvas.remove(line);
+          })
+      }
+    })
+    var a = polygon.id
+    polygon.id = null
+    nPolygon.id = a
+    nPolygon.stroke = polygon.stroke
+    nPolygon.fill = polygon.fill
+    nPolygon.className = polygon.className
+    nPolygon.label = polygon.label
+    return nPolygon
   }
 }
 
@@ -451,30 +543,6 @@ hiDraw.prototype.Polygon = (function () {
     var inst = this;
     inst.enable();
 
-    // var pointer = inst.canvas.getPointer(o.e);
-    // origX = pointer.x;
-    // origY = pointer.y;
-
-    // var ellipse = new fabric.Ellipse({
-    //     top: origY,
-    //     left: origX,
-    //     rx: 0,
-    //     ry: 0,
-    //     selectable: false,
-    //     hasBorders: true,
-    //     hasControls: true,
-    //     strokeUniform: true
-    // });
-
-    // ellipse.on('selected', function () {
-    //     console.log('selected a Circle');
-    //     inst.enable();
-    // });
-    // ellipse.on('mousedown', function () {
-    //     console.log('mousedown a Circle');
-    // });
-
-    // inst.canvas.add(ellipse).setActiveObject(ellipse);
     if (o.target && o.target.id &&
       inst.pointArray &&
       inst.pointArray[0] &&
@@ -505,8 +573,8 @@ hiDraw.prototype.Polygon = (function () {
   Polygon.prototype.addPoint = function (options) {
     var inst = this;
     var pointer = inst.canvas.getPointer(options.e);
-    // var random = Math.floor(Math.random() * (inst.max - inst.min + 1)) + inst.min;
-    var id = hiDraw.prototype.uniqueIdGenerater();
+    var random = Math.floor(Math.random() * (inst.max - inst.min + 1)) + inst.min;
+    var id = new Date().getTime() + random;
     var zoom = inst.canvas.getZoom() || 1;
     var circle = new fabric.Circle({
       tempDrawShape: true,
@@ -629,11 +697,23 @@ hiDraw.prototype.Polygon = (function () {
     var inst = this;
 
     var points = new Array();
+    var minX;
+    var minY;
     pointArray.forEach(function (point) {
       points.push({
         x: point.left,
         y: point.top
       });
+      if (typeof minX === 'undefined') {
+        minX = point.left 
+      } else {
+        minX = Math.min(minX, point.left)
+      }
+      if (typeof minY === 'undefined') {
+        minY = point.top 
+      } else {
+        minY = Math.min(minY, point.top)
+      }
       inst.canvas.remove(point);
     })
 
@@ -645,8 +725,10 @@ hiDraw.prototype.Polygon = (function () {
       // stroke: '#333333',
       // strokeWidth: 1,
       // fill: 'rgba(0,0,0,0)',
+      left: minX,
+      top: minY,
       opacity: 1,
-      hasBorders: true,
+      hasBorders: false,
       hasControls: true,
       strokeUniform: true,
       objectCaching: false,
@@ -656,32 +738,6 @@ hiDraw.prototype.Polygon = (function () {
       inst.enable();
       var evt = opt.e;
       var polygon = inst.canvas.getActiveObject();
-      // if (evt && evt.ctrlKey === true) {
-      //     var polygonCenter = polygon.getCenterPoint();
-      //     var lastControl = polygon.points.length - 1;
-      //     polygon.cornerStyle = 'circle';
-      //     polygon.cornerColor = 'rgba(0,0,255,0.5)';
-      //     polygon.controls = polygon.points.reduce(function (acc, point, index) {
-      //         acc['p' + index] = new fabric.Control({
-      //             positionHandler: polygonPositionHandler,
-      //             actionHandler: anchorWrapper(index > 0 ? index - 1 : lastControl, actionHandler),
-      //             actionName: 'modifyPolygon',
-      //             pointIndex: index
-      //         });
-      //         return acc;
-      //     }, {});
-      // } else if (evt && evt.shiftKey === true) {
-      //     polygon.editShape = true;
-      //     polygon.hasControls = false;
-      //     polygon.hasBorders = false;
-      //     polygon.selectable = false;
-      //     drawEdge(inst.canvas, polygon)
-      //     drawPoints(inst.canvas, polygon)
-      // } else {
-      //     polygon.cornerColor = 'rgb(178,204,255)';
-      //     polygon.cornerStyle = 'rect';
-      //     polygon.controls = fabric.Object.prototype.controls;
-      // }
 
       if (evt && evt.shiftKey === true) {
         polygon.editShape = true;
@@ -689,9 +745,6 @@ hiDraw.prototype.Polygon = (function () {
         polygon.hasBorders = false;
         polygon.selectable = false;
         polygon.polygonAddPoints(polygon)
-        // controlOverride.polygonAddPoints(polygon)
-        // drawEdge(inst.canvas, polygon)
-        // drawPoints(inst.canvas, polygon)
       }
 
       // inst.bindEvents();
@@ -699,20 +752,7 @@ hiDraw.prototype.Polygon = (function () {
         inst.options.onSelected(polygon);
       }
     });
-    polygon.on('moved', function (opt) {
-      if (polygon.editShape) {
-        drawEdge(inst.canvas, polygon)
-        drawPoints(inst.canvas, polygon)
-      } else {
-        console.log('not edit shape')
-      }
-    })
-    polygon.on("modified", function () {
-      if (polygon.editShape) {
-        drawEdge(inst.canvas, polygon)
-        drawPoints(inst.canvas, polygon)
-      }
-    })
+
     for (var prop in inst.otherProps) {
       polygon[prop] = inst.otherProps[prop];
     }
@@ -727,278 +767,36 @@ hiDraw.prototype.Polygon = (function () {
     inst.disable();
   }
 
-  // define a function that can locate the controls.
-  // this function will be used both for drawing and for interaction.
-  function polygonPositionHandler(dim, finalMatrix, fabricObject) {
-    var x = (fabricObject.points[this.pointIndex].x - fabricObject.pathOffset.x),
-      y = (fabricObject.points[this.pointIndex].y - fabricObject.pathOffset.y);
-    return fabric.util.transformPoint({
-        x: x,
-        y: y
-      },
-      fabric.util.multiplyTransformMatrices(
-        fabricObject.canvas.viewportTransform,
-        fabricObject.calcTransformMatrix()
-      )
-    );
-  }
-
-  // define a function that will define what the control does
-  // this function will be called on every mouse move after a control has been
-  // clicked and is being dragged.
-  // The function receive as argument the mouse event, the current trasnform object
-  // and the current position in canvas coordinate
-  // transform.target is a reference to the current object being transformed,
-  function actionHandler(eventData, transform, x, y) {
-    var polygon = transform.target,
-      currentControl = polygon.controls[polygon.__corner],
-      mouseLocalPosition = polygon.toLocalPoint(new fabric.Point(x, y), 'center', 'center'),
-      polygonBaseSize = polygon._getNonTransformedDimensions(),
-      size = polygon._getTransformedDimensions(0, 0),
-      finalPointPosition = {
-        x: mouseLocalPosition.x * polygonBaseSize.x / size.x + polygon.pathOffset.x,
-        y: mouseLocalPosition.y * polygonBaseSize.y / size.y + polygon.pathOffset.y
-      };
-    polygon.points[currentControl.pointIndex] = finalPointPosition;
-    return true;
-  }
-
-  // define a function that can keep the polygon in the same position when we change its
-  // width/height/top/left.
-  function anchorWrapper(anchorIndex, fn) {
-    return function (eventData, transform, x, y) {
-      var fabricObject = transform.target,
-        absolutePoint = fabric.util.transformPoint({
-          x: (fabricObject.points[anchorIndex].x - fabricObject.pathOffset.x),
-          y: (fabricObject.points[anchorIndex].y - fabricObject.pathOffset.y),
-        }, fabricObject.calcTransformMatrix()),
-        actionPerformed = fn(eventData, transform, x, y),
-        newDim = fabricObject._setPositionDimensions({}),
-        polygonBaseSize = fabricObject._getNonTransformedDimensions(),
-        newX = (fabricObject.points[anchorIndex].x - fabricObject.pathOffset.x) / polygonBaseSize.x,
-        newY = (fabricObject.points[anchorIndex].y - fabricObject.pathOffset.y) / polygonBaseSize.y;
-      // console.log('absolutePoint', absolutePoint)
-      fabricObject.setPositionByOrigin(absolutePoint, newX + 0.5, newY + 0.5);
-      return actionPerformed;
-    }
-  }
-
-  //-----------------------
-  // custom control
-
-  function newPoints(canvas, polygon) {
-    if (!polygon) {
-      return;
-    }
-    var matrix = polygon.calcTransformMatrix();
-    var transformedPoints = polygon.get("points")
-      .map(function (p) {
-        var a = new fabric.Point(
-          p.x - polygon.pathOffset.x,
-          p.y - polygon.pathOffset.y);
-        return a
-      })
-      .map(function (p) {
-        var b = fabric.util.transformPoint(p, matrix);
-        return b
-      });
-    return transformedPoints;
-  }
-
-  // function minXY(canvas, polygon) {
-  //     if(!polygon){
-  //         return;
-  //     }
-  //     var tempPoints = polygon.tempPoints;
-  //     var points = newPoints(canvas, polygon);
-  //     points = tempPoints;
-  //     var minX, minY, maxX, maxY;
-  //     points.forEach(function (point, index) {
-  //         if (index == 0) {
-  //             // minX = point.x;
-  //             // minY = point.y;
-  //             minX = point.getCenterPoint().x;
-  //             minY = point.getCenterPoint().y;
-  //             maxX = point.getCenterPoint().x;
-  //             maxY = point.getCenterPoint().y;
-  //         } else {
-  //             // minX = Math.min(minX, point.x)
-  //             // minY = Math.min(minY, point.y)
-  //             minX = Math.min(minX, point.getCenterPoint().x)
-  //             minY = Math.min(minY, point.getCenterPoint().y)
-  //             maxX = Math.max(maxX, point.getCenterPoint().x)
-  //             maxY = Math.max(maxY, point.getCenterPoint().y)
-  //         }
-  //     });
-  //     return {
-  //         x: minX,
-  //         y: minY,
-  //         width: (maxX - minX),
-  //         height: (maxY - minY)
-  //     }
-  // }
-
-  function drawPoints(canvas, polygon) {
-    if (!polygon) {
-      return;
-    }
-    var tempPoints = polygon.tempPoints || [];
-    tempPoints.forEach(function (circle, index) {
-      canvas.remove(circle);
-    })
-    tempPoints = [];
-    var points = polygon.points;
-    var zoom = canvas.getZoom() || 1;
-    points = newPoints(canvas, polygon)
-    points.forEach(function (point, index) {
-      var circle = new fabric.Circle({
-        tempDrawShape: true,
-        radius: 5 / zoom,
-        strokeWidth: 1 / zoom,
-        fill: 'green',
-        left: point.x,
-        top: point.y,
-        originX: 'center',
-        originY: 'center',
-        selectable: true,
-        hasBorders: false,
-        hasControls: false,
-        name: index,
-        tempPoints: true
-      });
-      canvas.add(circle);
-      circle.bringToFront();
-      circle.on('mousedown', function (opt) {
-        var p = opt.target;
-        p.startOriginalPoint = {
-          x: p.getCenterPoint().x,
-          y: p.getCenterPoint().y
-        }
-      })
-      circle.on('moving', function (opt) {
-        var p = opt.target;
-        absolutePoint = circle.startOriginalPoint
-        //------------
-        var mouseLocalPosition = polygon.toLocalPoint(new fabric.Point(circle.getCenterPoint().x, circle.getCenterPoint().y), 'center', 'center')
-        var polygonBaseSize = polygon._getNonTransformedDimensions();
-        var size = polygon._getTransformedDimensions(0, 0);
-        polygon.points[circle.name] = {
-          x: mouseLocalPosition.x * polygonBaseSize.x / size.x + polygon.pathOffset.x,
-          y: mouseLocalPosition.y * polygonBaseSize.y / size.y + polygon.pathOffset.y
-        }
-      })
-      circle.on('moved', function (opt) {
-        drawEdge(canvas, polygon)
-        drawPoints(canvas, polygon)
-        // var min = minXY(canvas, polygon);
-        // newDim = polygon._setPositionDimensions({
-        //     left: min.x - 0.5,
-        //     top: min.y - 0.5,
-        //     width: min.width,
-        //     height: min.height
-        // })
-        // polygon.set('left', min.x - 0.5)
-        // polygon.set('top', min.y - 0.5)
-        // polygon.set('width', min.width + 0.5)
-        // polygon.set('height', min.height + 0.5)
-      })
-      tempPoints.push(circle)
-    });
-    polygon.tempPoints = tempPoints;
-  }
-
-  function drawEdge(canvas, polygon) {
-    if (!polygon) {
-      return;
-    }
-    var tempLines = polygon.tempLines || [];
-    tempLines.forEach(function (line, index) {
-      canvas.remove(line);
-    })
-    tempLines = [];
-    var points = polygon.points;
-    points = newPoints(canvas, polygon)
-    points.forEach(function (point, index) {
-      var lineX1 = point.x,
-        lineY1 = point.y,
-        lineX2, lineY2, pointsLength = points.length;
-      if (index == 0) {
-        lineX2 = points[pointsLength - 1].x;
-        lineY2 = points[pointsLength - 1].y;
-      } else {
-        lineX2 = points[index - 1].x;
-        lineY2 = points[index - 1].y;
-      }
-      var line = new fabric.Line([lineX1, lineY1, lineX2, lineY2], {
-        tempDrawShape: true,
-        strokeWidth: 2,
-        fill: '#999999',
-        stroke: '#999999',
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        hasBorders: false,
-        hasControls: false,
-        lockMovementX: true,
-        lockMovementY: true,
-        name: 'L' + index,
-        ll: '/' + lineX1 + '/' + lineY1 + '/' + lineX2 + '/' + lineY2,
-        tempLines: true
-      });
-      canvas.add(line);
-      line.bringToFront();
-      // line.sendToBack();
-      line.on('mousedown', function (opt) {
-        var idx = parseInt(opt.target.name.replace('L', ''))
-        mouseCoords = {
-          x: canvas.getPointer(opt.e).x,
-          y: canvas.getPointer(opt.e).y
-        }
-        var x1 = opt.target.x1,
-          x2 = opt.target.x2,
-          y1 = opt.target.y1,
-          y2 = opt.target.y2;
-        var a = (y1 - y2)
-        var b = (x2 - x1)
-        var c = (x1 - x2) * y2 - (y1 - y2) * x2;
-        var x0 = mouseCoords.x,
-          y0 = mouseCoords.y;
-        var dist = Math.abs(a * x0 + b * y0 + c) / Math.sqrt(a * a + b * b);
-        var mouseLocalPosition = polygon.toLocalPoint(new fabric.Point(mouseCoords.x, mouseCoords.y), 'center', 'center')
-        var polygonBaseSize = polygon._getNonTransformedDimensions();
-        var size = polygon._getTransformedDimensions(0, 0);
-        var newPoint = {
-          x: mouseLocalPosition.x * polygonBaseSize.x / size.x + polygon.pathOffset.x,
-          y: mouseLocalPosition.y * polygonBaseSize.y / size.y + polygon.pathOffset.y
-        }
-        if (dist <= 2) {
-          polygon.points.splice(idx, 0, newPoint);
-          canvas.renderAll()
-          drawEdge(canvas, polygon)
-          drawPoints(canvas, polygon)
-        }
-      })
-      tempLines.push(line)
-    });
-    polygon.tempLines = tempLines;
-  }
-
-  function removeControl(canvas, polygon) {
-    tempPoints.forEach(function (circle, index) {
-      canvas.remove(circle);
-    })
-    tempLines.forEach(function (line, index) {
-      canvas.remove(line);
-    })
-    polygon.controls = fabric.Object.prototype.controls;
-    polygon.hasControls = true;
-    canvas.setActiveObject(polygon);
-  }
-  //-----------------------
-
 
   return Polygon;
 })()
+
+hiDraw.prototype.PolygonMinXY = function (canvas, polygon) {
+  if(!polygon){
+      return;
+  }
+  var points = polygon.get("points");
+  var minX, minY, maxX, maxY;
+  points.forEach(function (point, index) {
+      if (index == 0) {
+          minX = point.x;
+          minY = point.y;
+          maxX = point.x;
+          maxY = point.y;
+      } else {
+          minX = Math.min(minX, point.x)
+          minY = Math.min(minY, point.y)
+          maxX = Math.max(maxX, point.x)
+          maxY = Math.max(maxY, point.y)
+      }
+  });
+  return {
+      x: minX,
+      y: minY,
+      width: (maxX - minX),
+      height: (maxY - minY)
+  }
+}
 
 // var polygon = canvas.getActiveObject();
 
@@ -1052,6 +850,3 @@ hiDraw.prototype.renderPolygonLayer = function (canvasView) {
   })
   canvasView.renderAll()
 }
-
-
-})(typeof exports !== 'undefined' ? exports : this);
