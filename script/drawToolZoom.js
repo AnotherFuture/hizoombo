@@ -1,7 +1,7 @@
 (function () {
   window.tt = 0
-  // window.imagePath = './spliteImg/1622/CMU-1'
-  window.imagePath = './spliteImg/1112222/1112222'
+  window.imagePath = './spliteImg/1622/CMU-1'
+  // window.imagePath = './spliteImg/1112222/1112222'
   window.imgInfo
   window.imglevel
   window.baselevel
@@ -30,13 +30,39 @@
   // var output = document.getElementById("rotateNum");
   slider.oninput = function () {
     var objShow = false
-    if (parseInt(this.value) === 0 || parseInt(this.value) === 360) {
-      objShow = true
-    }
-    edit.canvasView.forEachObject(function(i){
-      i.visible = objShow
-    })
+    // if (parseInt(this.value) === 0 || parseInt(this.value) === 360) {
+    //   objShow = true
+    // }
+    // edit.canvasView.forEachObject(function(i){
+    //   i.visible = objShow
+    // })
     rotateSwitch(parseInt(this.value))
+
+    canvas.discardActiveObject();
+    var selection = [];
+    canvas.getObjects().forEach(function(o) {
+      selection.push(o);
+      o.selectable = false;
+      o.hasBorders = false;
+    });
+    var sel = new fabric.ActiveSelection(selection, { canvas: canvas });
+    // canvas.setActiveObject(sel).requestRenderAll();
+    canvas.setActiveObject(sel)
+    canvas.getActiveObject().toGroup()
+    canvas.requestRenderAll();
+    // canvas.discardActiveObject();
+
+    // canvas.getObjects().forEach(function(o) {
+    //   // var activeO = canvas.getActiveObject();
+    //   var activeO = o;
+    //   var scale = fabric.util.findScaleToFit(activeO, canvas);
+    //   activeO.scaleX = scale;
+    //   activeO.scaleY = scale;
+    //   activeO.left = (canvas.width - activeO.getScaledWidth()) / 2
+    //   activeO.top = (canvas.height - activeO.getScaledHeight()) / 2
+    // });
+    // canvas.requestRenderAll();
+
     document.getElementById('angle').value = this.value
     document.getElementById('zoomNum').innerHTML = realZoom()
   }
