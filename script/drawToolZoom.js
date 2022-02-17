@@ -1314,7 +1314,8 @@
       })
       // 圖移置中
       // const imgAryBaseWidth = window.baselevel.slice_size[0]
-      window.sliceSize = window.baselevel.slice_size[0]
+      // window.sliceSize = window.baselevel.slice_size[0]
+      window.sliceSize = window.imgInfo.partition_resolution[0]
       const imgAryBaseWidth = window.baselevel.resolution[0] // tempXXXX
       const rate = Math.ceil(imgAryBaseWidth / canvas.width)
       const x = (imgAryBaseWidth / rate - canvas.width) / 2
